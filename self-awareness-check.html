@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Quiet Check In</title>
+<style>
+  :root{
+    --paper:#F6F4EF;
+    --ink:#2B2A28;
+    --ink-soft:#5C5952;
+    --teal:#3D6B66;
+    --teal-deep:#284A46;
+    --rose:#B5786F;
+    --line:#DEDACF;
+    --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Iowan Old Style','Georgia',serif;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 16px;
+  }
+  .sans{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;}
+  .wrap{
+    width:100%;
+    max-width:620px;
+  }
+  .disclaimer{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-left:4px solid var(--rose);
+    border-radius:4px;
+    padding:16px 18px;
+    font-size:14px;
+    line-height:1.55;
+    color:var(--ink-soft);
+    margin-bottom:22px;
+  }
+  .disclaimer strong{color:var(--ink);}
+  .progress-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .progress-track{
+    flex:1;
+    height:4px;
+    background:var(--line);
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--teal);
+    width:0%;
+    transition:width 0.4s ease;
+  }
+  .progress-label{
+    font-size:13px;
+    color:var(--ink-soft);
+    white-space:nowrap;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:44px 38px;
+    min-height:340px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    position:relative;
+  }
+  .domain-tag{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    font-size:12.5px;
+    color:var(--teal-deep);
+    letter-spacing:0.02em;
+    margin-bottom:14px;
+  }
+  .question{
+    font-size:26px;
+    line-height:1.4;
+    margin:0 0 30px 0;
+    animation:fadein 0.35s ease;
+  }
+  @keyframes fadein{
+    from{opacity:0; transform:translateY(4px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .opt-btn{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    text-align:left;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:7px;
+    padding:14px 16px;
+    font-size:15.5px;
+    color:var(--ink);
+    cursor:pointer;
+    transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  .opt-btn:hover{
+    border-color:var(--teal);
+    background:#EFF4F2;
+  }
+  .opt-btn:active{
+    transform:scale(0.995);
+  }
+  .nav-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:22px;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  }
+  .back-link{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    background:none;
+    border:none;
+    padding:6px 0;
+  }
+  .back-link:hover{color:var(--ink);}
+  .intro-title{
+    font-size:30px;
+    margin:0 0 14px 0;
+    line-height:1.3;
+  }
+  .intro-body{
+    font-size:16px;
+    line-height:1.6;
+    color:var(--ink-soft);
+    margin-bottom:26px;
+  }
+  .start-btn{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    background:var(--teal);
+    color:#fff;
+    border:none;
+    border-radius:7px;
+    padding:14px 24px;
+    font-size:15.5px;
+    cursor:pointer;
+    align-self:flex-start;
+  }
+  .start-btn:hover{background:var(--teal-deep);}
+  .results h2{
+    font-size:26px;
+    margin:0 0 6px 0;
+  }
+  .results .sub{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    font-size:14px;
+    color:var(--ink-soft);
+    margin-bottom:26px;
+  }
+  .domain-block{
+    margin-bottom:22px;
+  }
+  .domain-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:8px;
+  }
+  .domain-name{
+    font-size:17px;
+    font-weight:600;
+  }
+  .domain-band{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    font-size:12.5px;
+    color:var(--teal-deep);
+  }
+  .bar-track{
+    height:8px;
+    background:var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    margin-bottom:8px;
+  }
+  .bar-fill{
+    height:100%;
+    background:var(--rose);
+    border-radius:4px;
+  }
+  .domain-note{
+    font-size:14.5px;
+    line-height:1.55;
+    color:var(--ink-soft);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  }
+  .restart-btn{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    background:none;
+    border:1px solid var(--line);
+    border-radius:7px;
+    padding:12px 20px;
+    font-size:14.5px;
+    color:var(--ink);
+    cursor:pointer;
+    margin-top:10px;
+  }
+  .restart-btn:hover{border-color:var(--teal);}
+  @media (max-width:480px){
+    .card{padding:30px 22px;}
+    .question{font-size:22px;}
+    .intro-title{font-size:25px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="disclaimer sans">
+    <strong>Before you begin.</strong> This is a reflection exercise, not a diagnostic tool. It cannot tell you whether you are autistic, ADHD, or neurotypical. Only a licensed psychologist or psychiatrist can offer an actual assessment. Use this as a starting point for curiosity about yourself, and take anything meaningful here to a professional for a real conversation.
+  </div>
+
+  <div id="app"></div>
+
+</div>
+
+<script>
+const questions = [
+  {domain:"Social & Communication", text:"In group conversations, I often find it hard to know when it's my turn to speak."},
+  {domain:"Social & Communication", text:"I tend to take what people say quite literally, and can miss sarcasm or hidden meaning."},
+  {domain:"Social & Communication", text:"Making eye contact during conversation feels effortful or uncomfortable for me."},
+  {domain:"Social & Communication", text:"I prefer written communication, like texting or email, over talking on the phone."},
+  {domain:"Sensory & Routine", text:"Certain sounds, lights, smells, or textures bother me far more than they seem to bother other people."},
+  {domain:"Sensory & Routine", text:"I notice small changes in my environment that other people don't seem to pick up on."},
+  {domain:"Sensory & Routine", text:"I feel unsettled when my daily routine changes unexpectedly."},
+  {domain:"Sensory & Routine", text:"I have one or two topics I could talk about in great detail for hours."},
+  {domain:"Attention & Focus", text:"I can hyperfocus on something I find interesting to the point of losing track of time."},
+  {domain:"Attention & Focus", text:"I frequently lose or misplace everyday items like keys or my phone."},
+  {domain:"Attention & Focus", text:"Starting a task that doesn't interest me can feel almost physically difficult."},
+  {domain:"Attention & Focus", text:"My mind jumps between thoughts quickly, even when I'm trying to concentrate on one thing."},
+  {domain:"Emotional & Internal", text:"My emotions can shift quickly and intensely, sometimes over things that seem small to others."},
+  {domain:"Emotional & Internal", text:"I often feel things more intensely than the people around me seem to."},
+  {domain:"Emotional & Internal", text:"I fidget, rock, tap, or move in small repetitive ways when I'm thinking or anxious."},
+  {domain:"Masking & Social Effort", text:"I rehearse or plan conversations in my head before having them, so they'll go smoothly."},
+  {domain:"Masking & Social Effort", text:"By the end of a social day, I feel completely drained and need time alone to recover."},
+  {domain:"Masking & Social Effort", text:"I've been told I seem 'fine' or 'together' even on days I'm struggling a lot internally."}
+];
+
+const options = [
+  {label:"Not really me", value:0},
+  {label:"A little like me", value:1},
+  {label:"Quite like me", value:2},
+  {label:"Very much me", value:3}
+];
+
+let current = -1; // -1 = intro screen
+let answers = new Array(questions.length).fill(null);
+
+const app = document.getElementById('app');
+
+function render(){
+  if(current === -1){ renderIntro(); return; }
+  if(current === questions.length){ renderResults(); return; }
+  renderQuestion();
+}
+
+function renderIntro(){
+  app.innerHTML = `
+    <div class="card">
+      <h1 class="intro-title">A quiet check in</h1>
+      <p class="intro-body">Eighteen short statements, one at a time. Answer with whatever feels true for how you generally are, not just today. There are no right answers, and no one is scoring you but you.</p>
+      <button class="start-btn" onclick="startQuiz()">Begin</button>
+    </div>
+  `;
+}
+
+function startQuiz(){
+  current = 0;
+  render();
+}
+
+function renderQuestion(){
+  const q = questions[current];
+  const pct = Math.round((current / questions.length) * 100);
+  app.innerHTML = `
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="progress-label">${current+1} of ${questions.length}</div>
+    </div>
+    <div class="card">
+      <div class="domain-tag">${q.domain}</div>
+      <p class="question">${q.text}</p>
+      <div class="options">
+        ${options.map(o => `<button class="opt-btn" onclick="answer(${o.value})">${o.label}</button>`).join('')}
+      </div>
+    </div>
+    <div class="nav-row">
+      ${current > 0 ? `<button class="back-link" onclick="goBack()">&larr; Back</button>` : `<span></span>`}
+      <span></span>
+    </div>
+  `;
+}
+
+function answer(value){
+  answers[current] = value;
+  current++;
+  render();
+}
+
+function goBack(){
+  current--;
+  render();
+}
+
+function renderResults(){
+  const domainOrder = ["Social & Communication","Sensory & Routine","Attention & Focus","Emotional & Internal","Masking & Social Effort"];
+  const domainNotes = {
+    "Social & Communication": {
+      low: "Social exchanges generally seem to flow easily for you.",
+      mid: "You show some traits linked to differences in how social cues are processed.",
+      high: "You showed several traits often associated with autistic style social communication, such as literal interpretation or discomfort with certain social conventions."
+    },
+    "Sensory & Routine": {
+      low: "Sensory input and changes in routine don't seem to strongly affect you.",
+      mid: "You show some sensitivity to sensory input or a preference for predictability.",
+      high: "You showed several traits often associated with sensory sensitivity and a strong need for routine or deep, focused interests."
+    },
+    "Attention & Focus": {
+      low: "Attention and task initiation don't seem to be a major theme for you.",
+      mid: "You show some traits around attention regulation, like variable focus or item misplacement.",
+      high: "You showed several traits often associated with ADHD style attention patterns, including hyperfocus, distractibility, and difficulty starting tasks."
+    },
+    "Emotional & Internal": {
+      low: "Emotional intensity and self-regulating movement don't stand out strongly for you.",
+      mid: "You show some traits around emotional intensity or self-soothing behaviors.",
+      high: "You showed several traits often associated with heightened emotional intensity and self-regulating behaviors like stimming."
+    },
+    "Masking & Social Effort": {
+      low: "Social situations don't seem to require heavy conscious effort for you.",
+      mid: "You show some signs of consciously managing how you come across socially.",
+      high: "You showed several traits often associated with masking, where social behavior is consciously rehearsed and is followed by real fatigue."
+    }
+  };
+
+  const domainScores = {};
+  domainOrder.forEach(d => domainScores[d] = {sum:0, max:0});
+  questions.forEach((q, i) => {
+    domainScores[q.domain].sum += answers[i];
+    domainScores[q.domain].max += 3;
+  });
+
+  const blocksHtml = domainOrder.map(d => {
+    const {sum, max} = domainScores[d];
+    const pct = Math.round((sum / max) * 100);
+    let band, note;
+    if(pct < 34){ band = "Lower tendency"; note = domainNotes[d].low; }
+    else if(pct < 67){ band = "Moderate tendency"; note = domainNotes[d].mid; }
+    else { band = "Higher tendency"; note = domainNotes[d].high; }
+    return `
+      <div class="domain-block">
+        <div class="domain-head">
+          <span class="domain-name">${d}</span>
+          <span class="domain-band">${band}</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+        <p class="domain-note">${note}</p>
+      </div>
+    `;
+  }).join('');
+
+  app.innerHTML = `
+    <div class="card results">
+      <h2>What showed up for you</h2>
+      <p class="sub">These are observations about patterns in your answers, not conclusions about who you are.</p>
+      ${blocksHtml}
+      <p class="domain-note" style="margin-top:8px;">If any of this resonates, the next real step is a conversation with a licensed psychologist or psychiatrist who specializes in adult neurodivergence assessment. This tool can point you toward a question worth asking, it cannot answer it.</p>
+      <button class="restart-btn" onclick="restart()">Start again</button>
+    </div>
+  `;
+}
+
+function restart(){
+  current = -1;
+  answers = new Array(questions.length).fill(null);
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
