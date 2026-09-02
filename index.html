@@ -330,27 +330,37 @@ function renderResults(){
     "Social & Communication": {
       low: "Social exchanges generally seem to flow easily for you.",
       mid: "You show some traits linked to differences in how social cues are processed.",
-      high: "You showed several traits often associated with autistic style social communication, such as literal interpretation or discomfort with certain social conventions."
+      high: "You showed several traits that overlap with what tools like the Autism Spectrum Quotient screen for, such as literal interpretation or discomfort with certain social conventions.",
+      tool: "Modeled loosely on: Autism Spectrum Quotient (AQ)",
+      specialist: "Worth asking about: a clinical or developmental psychologist who does autism spectrum evaluations for adults."
     },
     "Sensory & Routine": {
       low: "Sensory input and changes in routine don't seem to strongly affect you.",
       mid: "You show some sensitivity to sensory input or a preference for predictability.",
-      high: "You showed several traits often associated with sensory sensitivity and a strong need for routine or deep, focused interests."
+      high: "You showed several traits that overlap with what sensory processing questionnaires and the Autism Spectrum Quotient screen for, including sensitivity to input and a strong need for routine or deep interests.",
+      tool: "Modeled loosely on: Autism Spectrum Quotient (AQ) and sensory processing questionnaires",
+      specialist: "Worth asking about: a clinical or developmental psychologist who does autism spectrum evaluations for adults, or an occupational therapist for the sensory piece specifically."
     },
     "Attention & Focus": {
       low: "Attention and task initiation don't seem to be a major theme for you.",
       mid: "You show some traits around attention regulation, like variable focus or item misplacement.",
-      high: "You showed several traits often associated with ADHD style attention patterns, including hyperfocus, distractibility, and difficulty starting tasks."
+      high: "You showed several traits that overlap with what the Adult ADHD Self Report Scale screens for, including hyperfocus, distractibility, and difficulty starting tasks.",
+      tool: "Modeled loosely on: Adult ADHD Self Report Scale (ASRS)",
+      specialist: "Worth asking about: a psychiatrist or psychologist who does adult ADHD assessments."
     },
     "Emotional & Internal": {
       low: "Emotional intensity and self-regulating movement don't stand out strongly for you.",
       mid: "You show some traits around emotional intensity or self-soothing behaviors.",
-      high: "You showed several traits often associated with heightened emotional intensity and self-regulating behaviors like stimming."
+      high: "You showed several traits that show up in both ADHD and autism screening around emotional intensity and self-regulating movement, sometimes called stimming.",
+      tool: "Modeled loosely on: items shared across the AQ and ASRS covering emotional regulation and self-regulation",
+      specialist: "Worth asking about: whichever specialist you pursue for the domains above, since this pattern tends to travel with either one."
     },
     "Masking & Social Effort": {
       low: "Social situations don't seem to require heavy conscious effort for you.",
       mid: "You show some signs of consciously managing how you come across socially.",
-      high: "You showed several traits often associated with masking, where social behavior is consciously rehearsed and is followed by real fatigue."
+      high: "You showed several traits associated with masking, where social behavior is consciously rehearsed and followed by real fatigue, a pattern increasingly included in adult autism and ADHD interviews though not yet in the older standardized questionnaires.",
+      tool: "Modeled loosely on: masking and camouflaging concepts from adult autism clinical interviews",
+      specialist: "Worth asking about: a psychologist experienced specifically with adult, late diagnosed, or camouflaged presentations, since masking can hide traits from standard screeners."
     }
   };
 
@@ -368,6 +378,7 @@ function renderResults(){
     if(pct < 34){ band = "Lower tendency"; note = domainNotes[d].low; }
     else if(pct < 67){ band = "Moderate tendency"; note = domainNotes[d].mid; }
     else { band = "Higher tendency"; note = domainNotes[d].high; }
+    const info = domainNotes[d];
     return `
       <div class="domain-block">
         <div class="domain-head">
@@ -376,6 +387,8 @@ function renderResults(){
         </div>
         <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
         <p class="domain-note">${note}</p>
+        <p class="domain-note" style="margin-top:6px; font-style:italic;">${info.tool}</p>
+        <p class="domain-note" style="margin-top:4px;">${info.specialist}</p>
       </div>
     `;
   }).join('');
